@@ -83,13 +83,14 @@ class MediaAiApp(QMainWindow):
         self.btns_layout.addLayout(self.out_file_combobox_layout, 3, 0)
         self.out_file_combobox = QComboBox()
         self.out_file_combobox_label = QLabel("Select Output File Type:")
-        self.out_file_combobox.addItems([".txt"])
+        self.out_file_combobox.addItems([".txt", ".srt"])
         self.out_file_combobox.currentIndexChanged.connect(self.change_out_file_type)
         self.out_file_combobox_layout.addWidget(self.out_file_combobox_label, 0, 0)
         self.out_file_combobox_layout.addWidget(self.out_file_combobox, 1, 0)
     
     def change_out_file_type(self):
-        pass
+        self.file_path = "output/out"+self.out_file_combobox.currentText()
+        #print(self.file_path)
 
     def mic_to_text(self):
         self.speech_recognizer = SpeechRecognizer(tool="mic", language=self.language)
@@ -106,8 +107,9 @@ class MediaAiApp(QMainWindow):
             self.speech_recognizer.start()
 
     def generate_file(self):
-        pass
-       
+         with open(self.file_path, "w") as file:
+            file.write(self.text_edit.toPlainText())
+
     def status_update(self, status):
         self.status_label.setText(status)
 

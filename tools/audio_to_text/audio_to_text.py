@@ -38,8 +38,8 @@ class SpeechRecognizer(QObject, Thread):
                 self.set_status("Processing...")
                 text = self.recognizer.recognize_google(audio, language=self.language)
                 #print("Text: " + text)
-                with open("mic_to_text.txt", "w") as file:
-                    file.write(text)
+                #with open("mic_to_text.txt", "w") as file:
+                #    file.write(text)
                 self.set_status("Done")
                 self.set_text(str(text))
             
@@ -58,8 +58,8 @@ class SpeechRecognizer(QObject, Thread):
             try:
                 audio = self.recognizer.listen(source, timeout=10)
                 text = self.recognizer.recognize_google(audio, language=self.language)
-                with open("audio_file_to_text.txt", "w") as file:
-                    file.write(text)
+                #with open("audio_file_to_text.txt", "w") as file:
+                #    file.write(text)
                 self.set_status("Done")
                 self.set_text(str(text))
             except sr.UnknownValueError:
