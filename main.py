@@ -46,9 +46,14 @@ class MediaAiApp(QMainWindow):
         self.btns_layout.addWidget(self.upload_button, 2, 0)
         
         self.create_language_combobox()
+        self.create_out_file_combobox()
+        
+        self.generate_file_button = QPushButton('Generate File', self)
+        self.generate_file_button.clicked.connect(self.generate_file)
+        self.btns_layout.addWidget(self.generate_file_button, 4, 0)
         # Create a spacer item to push the layout content up
         self.spacer = QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        self.btns_layout.addItem(self.spacer, 3, 0)  # Place the spacer at the top
+        self.btns_layout.addItem(self.spacer, 5, 0)  # Place the spacer at the top
         self.layout.setColumnStretch(3,0)
         self.show()
     
@@ -73,6 +78,19 @@ class MediaAiApp(QMainWindow):
         lang_code = self.language_combobox.currentText().split(" - ")[1]
         self.language = lang_code
 
+    def create_out_file_combobox(self):
+        self.out_file_combobox_layout = QGridLayout()
+        self.btns_layout.addLayout(self.out_file_combobox_layout, 3, 0)
+        self.out_file_combobox = QComboBox()
+        self.out_file_combobox_label = QLabel("Select Output File Type:")
+        self.out_file_combobox.addItems([".txt"])
+        self.out_file_combobox.currentIndexChanged.connect(self.change_out_file_type)
+        self.out_file_combobox_layout.addWidget(self.out_file_combobox_label, 0, 0)
+        self.out_file_combobox_layout.addWidget(self.out_file_combobox, 1, 0)
+    
+    def change_out_file_type(self):
+        pass
+
     def mic_to_text(self):
         self.speech_recognizer = SpeechRecognizer(tool="mic", language=self.language)
         self.speech_recognizer.status_update.connect(self.status_update)
@@ -86,7 +104,10 @@ class MediaAiApp(QMainWindow):
             self.speech_recognizer.status_update.connect(self.status_update)
             self.speech_recognizer.text_update.connect(self.text_update)
             self.speech_recognizer.start()
-           
+
+    def generate_file(self):
+        pass
+       
     def status_update(self, status):
         self.status_label.setText(status)
 
