@@ -3,4 +3,4 @@
 ```pip install SpeechRecognition PyAudio PyQt6```
 
 ## Features
-- [Audio to Text Converter]
+- [x] Audio to Text Converter
