@@ -64,9 +64,9 @@ class MediaAiApp(QMainWindow):
         self.language_combobox = QComboBox()
         self.language_combobox_label = QLabel("Select Language:")
         self.language_combobox.addItems([
-            "English (US) - en-US", "English (UK) - en-GB",
-            "Spanish - es-ES", "French - fr-FR",
-            "German - de-DE"
+            "English (US) - en",
+            "Spanish - es", "French - fr",
+            "German - de"
         ])
         self.language_combobox.currentIndexChanged.connect(self.change_language)
         self.language_combobox_layout.addWidget(self.language_combobox_label, 0, 0)
@@ -83,10 +83,11 @@ class MediaAiApp(QMainWindow):
         self.btns_layout.addLayout(self.out_file_combobox_layout, 3, 0)
         self.out_file_combobox = QComboBox()
         self.out_file_combobox_label = QLabel("Select Output File Type:")
-        self.out_file_combobox.addItems([".txt", ".srt"])
+        self.out_file_combobox.addItems([".txt", ".srt", ".vvt"])
         self.out_file_combobox.currentIndexChanged.connect(self.change_out_file_type)
         self.out_file_combobox_layout.addWidget(self.out_file_combobox_label, 0, 0)
         self.out_file_combobox_layout.addWidget(self.out_file_combobox, 1, 0)
+        self.change_out_file_type()
     
     def change_out_file_type(self):
         self.file_path = "output/out"+self.out_file_combobox.currentText()

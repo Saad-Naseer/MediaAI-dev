@@ -27,7 +27,39 @@ class SpeechRecognizer(QObject, Thread):
 
     def set_text(self, text: str):
          self.text_update.emit(text)
+    def format_time(self, seconds):
+        """Convert seconds to SRT time format."""
+        millis = int((seconds - int(seconds)) * 1000)
+        seconds = int(seconds)
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
+        return f"{hours:02}:{minutes:02}:{seconds:02},{millis:03}"
 
+    def dict_to_srt(self, data):
+        """Convert a dictionary with subtitle data to an SRT formatted string."""
+        print("srt")
+        srt = ""
+        for i, segment in enumerate(data['segments']):
+            start = self.format_time(segment['start'])
+            end = self.format_time(segment['end'])
+            text = segment['text'].strip()
+            
+            srt += f"{i + 1}\n{start} --> {end}\n{text}\n\n"
+        
+        return srt
+    
+    def dict_to_vtt(self, data):
+        vtt = "WEBVTT\n\n"
+        for i, segment in enumerate(data['segments']):
+            start = self.format_time(segment['start'], '.')
+            end = self.format_time(segment['end'], '.')
+            text = segment['text'].strip()
+            
+            vtt += f"{i + 1}\n{start} --> {end}\n{text}\n\n"
+        
+        return vtt
+    
     def mic_to_text(self):
         with sr.Microphone() as source:
             self.set_status("Adjusting for ambient noise...")
@@ -42,6 +74,7 @@ class SpeechRecognizer(QObject, Thread):
                 #    file.write(text)
                 self.set_status("Done")
                 self.set_text(str(text))
+
             
             except sr.WaitTimeoutError:
                 self.set_status("No audio detected from mic")
@@ -57,11 +90,15 @@ class SpeechRecognizer(QObject, Thread):
             self.set_status("Processing...")
             try:
                 audio = self.recognizer.listen(source, timeout=10)
-                text = self.recognizer.recognize_google(audio, language=self.language)
+                #text = self.recognizer.recognize_google(audio, language=self.language, show_all=True)
+                text = self.recognizer.recognize_whisper(audio, language=self.language, show_dict=True, model="base")
+
                 #with open("audio_file_to_text.txt", "w") as file:
                 #    file.write(text)
                 self.set_status("Done")
                 self.set_text(str(text))
+                #srt_output = self.dict_to_srt(text)
+                #print("srt: ", srt_output)
             except sr.UnknownValueError:
                 self.set_status("Google could not understand the audio")
             except sr.RequestError as e:
