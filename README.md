@@ -9,4 +9,4 @@
 
 ```python main.py```
 ## Features
-- [x] Audio to Text Converter
+- [x] Audio to .txt, .srt, .vvt Converter
