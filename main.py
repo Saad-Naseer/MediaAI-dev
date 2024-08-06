@@ -9,6 +9,7 @@ from threading import Thread
 class MediaAiApp(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.text = None
         self.initUI()
 
     def initUI(self):
@@ -39,21 +40,21 @@ class MediaAiApp(QMainWindow):
 
         self.record_button = QPushButton('Record from Mic', self)
         self.record_button.clicked.connect(self.mic_to_text)
-        self.btns_layout.addWidget(self.record_button, 1, 0)
+        self.btns_layout.addWidget(self.record_button, 2, 0)
         
         self.upload_button = QPushButton('Upload Audio File', self)
         self.upload_button.clicked.connect(self.upload_file)
-        self.btns_layout.addWidget(self.upload_button, 2, 0)
+        self.btns_layout.addWidget(self.upload_button, 3, 0)
         
         self.create_language_combobox()
         self.create_out_file_combobox()
-        
+        self.create_model_combobox()
         self.generate_file_button = QPushButton('Generate File', self)
         self.generate_file_button.clicked.connect(self.generate_file)
-        self.btns_layout.addWidget(self.generate_file_button, 4, 0)
+        self.btns_layout.addWidget(self.generate_file_button, 5, 0)
         # Create a spacer item to push the layout content up
         self.spacer = QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        self.btns_layout.addItem(self.spacer, 5, 0)  # Place the spacer at the top
+        self.btns_layout.addItem(self.spacer, 6, 0)  # Place the spacer at the top
         self.layout.setColumnStretch(3,0)
         self.show()
     
@@ -77,24 +78,59 @@ class MediaAiApp(QMainWindow):
     def change_language(self):
         lang_code = self.language_combobox.currentText().split(" - ")[1]
         self.language = lang_code
+    
+    def create_model_combobox(self):
+        self.model_combobox_layout = QGridLayout()
+        self.btns_layout.addLayout(self.model_combobox_layout, 1, 0)
+        self.model_combobox = QComboBox()
+        self.model_combobox_label = QLabel("Select Model:")
+        self.model_combobox.addItems([
+            "tiny",
+            "base",
+            "small",
+            "medium",
+            "large",
+            "tiny.en",
+            "base.en",
+            "small.en",
+            "medium.en"
+        ])
+        self.model_combobox.currentIndexChanged.connect(self.change_model)
+        self.model_combobox_layout.addWidget(self.model_combobox_label, 0, 0)
+        self.model_combobox_layout.addWidget(self.model_combobox, 1, 0)
+        self.change_model()
+    
+    def change_model(self):
+        self.model = self.model_combobox.currentText()
 
     def create_out_file_combobox(self):
         self.out_file_combobox_layout = QGridLayout()
-        self.btns_layout.addLayout(self.out_file_combobox_layout, 3, 0)
+        self.btns_layout.addLayout(self.out_file_combobox_layout, 4, 0)
         self.out_file_combobox = QComboBox()
         self.out_file_combobox_label = QLabel("Select Output File Type:")
-        self.out_file_combobox.addItems([".txt", ".srt", ".vvt"])
+        self.out_file_combobox.addItems([".txt", ".srt", ".vtt"])
         self.out_file_combobox.currentIndexChanged.connect(self.change_out_file_type)
         self.out_file_combobox_layout.addWidget(self.out_file_combobox_label, 0, 0)
         self.out_file_combobox_layout.addWidget(self.out_file_combobox, 1, 0)
         self.change_out_file_type()
     
     def change_out_file_type(self):
-        self.file_path = "output/out"+self.out_file_combobox.currentText()
-        #print(self.file_path)
+        if self.text !=None:
+           self.update_file_type()
+
+    def update_file_type(self):
+        if self.out_file_combobox.currentText()==".txt":
+            txt = self.speech_recognizer.dict_to_text(self.text)
+            self.text_edit.setText(txt)
+        elif self.out_file_combobox.currentText()==".srt":
+            srt = self.speech_recognizer.dict_to_srt(self.text)
+            self.text_edit.setText(srt)
+        elif self.out_file_combobox.currentText()==".vtt":
+            vtt = self.speech_recognizer.dict_to_vtt(self.text)
+            self.text_edit.setText(vtt)
 
     def mic_to_text(self):
-        self.speech_recognizer = SpeechRecognizer(tool="mic", language=self.language)
+        self.speech_recognizer = SpeechRecognizer(tool="mic", language=self.language, model=self.model)
         self.speech_recognizer.status_update.connect(self.status_update)
         self.speech_recognizer.text_update.connect(self.text_update)
         self.speech_recognizer.start()
@@ -102,20 +138,23 @@ class MediaAiApp(QMainWindow):
     def upload_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Open Audio File", "", "Audio Files (*.wav *.flac *.mp3)")
         if file_path:
-            self.speech_recognizer= SpeechRecognizer(tool="file", language=self.language, file_path=file_path)
+            self.speech_recognizer= SpeechRecognizer(tool="file", language=self.language, file_path=file_path, model = self.model)
             self.speech_recognizer.status_update.connect(self.status_update)
             self.speech_recognizer.text_update.connect(self.text_update)
             self.speech_recognizer.start()
 
     def generate_file(self):
-         with open(self.file_path, "w") as file:
+         file_path = "output/out"+self.out_file_combobox.currentText()
+         with open(file_path, "w") as file:
             file.write(self.text_edit.toPlainText())
 
     def status_update(self, status):
         self.status_label.setText(status)
 
     def text_update(self, text):
-        self.text_edit.setText(text)
+        self.text = text
+        self.update_file_type()
+
 
 def main():
     app = QApplication(sys.argv)
