@@ -9,4 +9,4 @@
 
 ```python main.py```
 ## Features
-- [x] Audio to .txt, .srt, .vvt Converter
+- [x] Audio (mic, .wav, .mp3, .AIFF, .AIFF-C, FLAC) to Text (.txt, .srt, .vvt) Converter 
