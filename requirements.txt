@@ -1,4 +1,0 @@
-SpeechRecognition[whisper-api]
-PyAudio
-PyQt6
-NumPy==1.26.4
