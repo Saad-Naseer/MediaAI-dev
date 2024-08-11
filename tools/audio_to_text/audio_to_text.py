@@ -6,10 +6,11 @@ from tools.audio_to_text.microphone import MicrophoneStream
 from tools.audio_to_text.vosk_recognizer import vosk_recognizer
 import speech_recognition as sr
 
+start_vosk = False
+
 class SpeechRecognizer(QObject, Thread):
     status_update = pyqtSignal(str)
     text_update = pyqtSignal(dict)
-    
     def __init__(self, tool=None, language="en-EN", file_path=None, model=None, engine=None):
         QObject.__init__(self)
         Thread.__init__(self)
@@ -75,8 +76,12 @@ class SpeechRecognizer(QObject, Thread):
         return vtt
     
     def mic_to_text(self, language, engine, model):
-        # 
+        global start_vosk
         if engine == "whisper":
+            self.set_status("starting whisper...")
+            start_vosk = False
+
+            print(start_vosk)
             with sr.Microphone() as source:
                 self.set_status("Adjusting for ambient noise...")
                 self.recognizer.adjust_for_ambient_noise(source, duration=5)
@@ -86,18 +91,22 @@ class SpeechRecognizer(QObject, Thread):
                 self.set_status("Done")
                 self.set_text(text)
         if engine == "vosk":
+            start_vosk = True
+            print(start_vosk)
+            self.set_status("starting vosk...")
             self.vosk = vosk_recognizer()
             mic_stream = MicrophoneStream()
-            self.set_status("Processing...")
+            self.set_status("Listening... Speak into the mic")
             try:
-                while True:
+                while start_vosk:
+                    print(start_vosk)
                     audio = mic_stream.read()
                     if audio:            
                         self.vosk.data(data=audio)
                         text = self.vosk.get_partial_result()
                         text = ast.literal_eval(text)
                         text['text'] = text.pop('partial')
-                        self.set_status("Done")
+                        #self.set_status("Done")
                         self.set_text(text)
                     else:
                         print("No audio data captured")  # Debug: No audio data case
