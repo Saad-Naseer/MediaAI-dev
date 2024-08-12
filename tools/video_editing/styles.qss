@@ -1,0 +1,28 @@
+/* styles.qss */
+QPushButton {
+    /*background-color: #4a4f3b;*/
+    border: none;
+    color: white;
+}
+
+QPushButton:checked {
+    background-color: #757b58;  /* Lighter color when toggled on */
+}
+
+QPushButton#mediaButton {
+    /* Specific styles for the media button */
+}
+
+QPushButton#videoButton {
+    /* Specific styles for the video button */
+}
+
+QPushButton#audioButton {
+    /* Specific styles for the audio button */
+}
+
+QLabel {
+    background-color: #4a4f3b;
+    color: white;
+    border: 1px solid #3c4331;
+}

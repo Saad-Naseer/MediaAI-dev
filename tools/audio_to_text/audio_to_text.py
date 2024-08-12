@@ -118,6 +118,8 @@ class SpeechRecognizer(QObject, Thread):
 
 
     def file_to_text(self, file_path, language, engine, model):
+        global start_vosk
+        start_vosk = False
         with sr.AudioFile(file_path) as source:
             audio = self.recognizer.record(source)
             self.set_status("Processing...")
