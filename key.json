@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "central-point-431612-v7",
+  "private_key_id": "0a38d09ba4e4ea36099a6126dc4de7e834a95ca6",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDlX0XBc33s0pwl\n9pK/1gNaWzMZwIj3pPaVxvsHx6k4bPbr6/LMzF/aDvz+86oYAVJmffT2ayzU/FjE\nadmGbqhYnHxr6BifbLkFg6YKI3qU0PkUGAEFmZvYwFdnZE29obL6kFXd06YHrwGs\nSCIhCA2eNm+nyuGtcEpdlycnSCDnDJQES+FEfKEgGAMnRRQKjfU82EpZcRV+VAcy\nwyoWbkBWNOsrwwxiBVxoXASCmRinYCx0oyVWg4am7tR01AFt4VNO7ykppBInPwY6\nsE1zKsB5ySPl2/ivoYKQ4CsdED1c4UoUHBBbm/3dkVzCoDXwI+D9mW3EMfulKHju\nvdor9olFAgMBAAECggEADXqcC4p5Ka/Vt8Bl7sqJj2eBGQAQvHbP+8zB5zrjNZrn\npsUKk2DmOBb95JCWnAsF19qKiOmS7KA4qjArNYRutahagm/U9JdrxwhtuzZLB5BB\nNt5TPwxAFYx2BnAlRmHIdgOB3EOKA/UTlNd3U/gYbsX1qUdZnDrXT+koRp1tO46L\n5o2Ydn1ZEunr9qRZSAVlrQd/+cykruBCQkB0jyWsMjKR1OWZT3t/5WQleFvXst9Y\nWlVpLXeE8BVH1djmf8iDmgR068o8W8hYb3SFC82S3dwqLgRW5t3nmNtk24mfSGLh\nnxbpRzCPeM3BwFZwdIjCJqFtZknzEsby5x3EJ7S0kQKBgQD/LLq8RN1vaYoG5yA9\n6a9CQUDme3bwh6vBmy8AJ5Zjwr3ILhj4XRIKQPdGdTwWGnu60AfIzBejltISAVeC\n172fu+dWE7N4eSPGizv7hCTHknhkr36uYptBxEQt3SNABySDs1grl0R+uwLuHaBc\nuFrnEzZFMyhSkBYyJeeV71CE9QKBgQDmHS4RKuhb44XvDTjmQal1awUVxqM3hkYV\ndznXTTOJbaRNazb34TOB9FcbtfcWi0tLU6BlX3vt/aKfcfVZw/RQi7K6W73W0QHb\nztUFHtvI2UmqPrjT1Y3TM/DGzBEHgSp4Pf+LWwLZuod7c2HPBCfJP7cpDPwTfSG4\nIaYbMT3BEQKBgQC7XSOMA+C34r2XjfPNoh2uv20hDzzpJiVGVmTvbyHtBFwHdVme\nW/BYGRW35XMGI9H//KoKlVkyJBcBY3zXNQQmGnmlaXfZGNHdAfU8G+5Jn9HI1Fdn\nQj4Pz0Xki0BLzjLQhUpTT5HaoARpxNUv36nXi/LIYuTTorq5fb2LCRqNVQKBgQDZ\n6oJIsbiP5FxesMfUjhQbZPjQ0WaZ22edRmYZNTv8Bj/VLRZGEhdEFw8y59SRneH0\n+MHpnk3vaAVMN5AgrQg+Cr177AtQVmgLL8jda4a5osQ3G+TOfusrOoHm0TPDRpfg\nfN32q358kD9jMjZK5GWFGPisQGarUhHPnNX/5FbV8QKBgQCmmugfGrKZS2hQco+q\nVhXeDfHR5Wlj3Fo05hA4yKQcmWY7Yf/fkl7/IigidzKRqb6IuGHSMPmvkoIraSuW\nxXgs3p3FdO2CdhPuwPIRlVl3Qy4U2GH7xTu6uBujElm4clpsM2jAwL3ADm4oshlz\nwmto0muEYYxddbO+cIfjjj6+Ag==\n-----END PRIVATE KEY-----\n",
+  "client_email": "saad-naseer@central-point-431612-v7.iam.gserviceaccount.com",
+  "client_id": "102309324514868285740",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/saad-naseer%40central-point-431612-v7.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
