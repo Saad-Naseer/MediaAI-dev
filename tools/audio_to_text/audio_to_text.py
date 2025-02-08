@@ -5,6 +5,11 @@ import ast
 from tools.audio_to_text.microphone import MicrophoneStream
 from tools.audio_to_text.vosk_recognizer import vosk_recognizer
 import speech_recognition as sr
+import mimetypes
+import ffmpeg
+import wave
+import io
+import numpy as np
 
 start_vosk = False
 
@@ -20,13 +25,42 @@ class SpeechRecognizer(QObject, Thread):
         self.file_path = file_path
         self.model = model
         self.engine = engine
+    
+    def get_file_type(self):
+        mime_type, _ = mimetypes.guess_type(self.file_path)
+        
+        if mime_type:
+            if mime_type.startswith("audio"):
+                return "audio"
+            elif mime_type.startswith("video"):
+                return "video"
+        return "unknown"
+    
+    def extract_audio(self):
+        try:
+            # Run FFmpeg command to extract raw audio as PCM data
+            process = (
+                ffmpeg.input(self.file_path)
+                .output("pipe:", format="wav", acodec="pcm_s16le")  # PCM 16-bit WAV
+                .run(capture_stdout=True, capture_stderr=True)
+            )
 
+            audio_bytes = process[0]  # Extracted audio as bytes
+            return audio_bytes
+        except Exception as e:
+            print(f"Error extracting audio: {e}")
+            return None
+   
     def run(self):
         if self.tool == "mic":
             self.mic_to_text(language=self.language, engine=self.engine, model=self.model)
         elif self.tool == "file":
             if self.file_path:
-                self.file_to_text(file_path=self.file_path, language=self.language, engine=self.engine, model=self.model)
+                if self.get_file_type() == "video":
+                    self.video_to_text(file_path=self.file_path, language=self.language, engine=self.engine, model=self.model)
+        
+                if self.get_file_type() == "audio":
+                    self.audio_to_text(file_path=self.file_path, language=self.language, engine=self.engine, model=self.model)
         
     def set_status(self, status: str):
         self.status_update.emit(status)
@@ -117,7 +151,7 @@ class SpeechRecognizer(QObject, Thread):
                     
 
 
-    def file_to_text(self, file_path, language, engine, model):
+    def audio_to_text(self, file_path, language, engine, model):
         global start_vosk
         start_vosk = False
         with sr.AudioFile(file_path) as source:
@@ -140,3 +174,65 @@ class SpeechRecognizer(QObject, Thread):
             except Exception as e:
                 self.set_status(f"An error occurred: {e}")
                 #print(e)
+
+
+
+    def extract_audio_from_video(self, file_path):
+        """
+        Extracts audio from a video file and returns raw PCM data.
+        
+        Returns:
+            tuple: (audio_bytes, sample_rate, sample_width)
+        """
+        # Extract audio using FFmpeg
+        out, _ = (
+            ffmpeg
+            .input(file_path)
+            .output("pipe:", format="wav", ac=1, ar=16000)  # Mono, 16kHz
+            .run(capture_stdout=True, capture_stderr=True)
+        )
+
+        # Load audio into a wave file (in memory)
+        with wave.open(io.BytesIO(out), "rb") as wav_file:
+            sample_rate = wav_file.getframerate()
+            sample_width = wav_file.getsampwidth()
+            audio_bytes = wav_file.readframes(wav_file.getnframes())
+
+        return audio_bytes, sample_rate, sample_width
+
+
+
+    def video_to_text(self, file_path, language, engine, model):
+        global start_vosk
+        start_vosk = False
+
+        # Extract audio from video
+        audio_bytes, sample_rate, sample_width = self.extract_audio_from_video(file_path)
+        if not audio_bytes:
+            self.set_status("Failed to extract audio from video.")
+            return
+        
+        # Convert to AudioData (used for speech recognition)
+        audio_data = sr.AudioData(audio_bytes, sample_rate, sample_width)
+
+        self.set_status("Processing...")
+        
+        try:
+            if engine == "whisper":
+                text = self.recognizer.recognize_whisper(audio_data=audio_data, language=language, show_dict=True, model=model)
+            elif engine == "vosk":
+                text = self.recognizer.recognize_vosk(audio_data=audio_data, language=language)
+                text = ast.literal_eval(text)
+            else:
+                self.set_status("Unsupported engine selected.")
+                return
+                    
+            self.set_status("Done")
+            self.set_text(text)
+
+        except sr.UnknownValueError:
+            self.set_status("Speech Recognition could not understand the audio")
+        except sr.RequestError as e:
+            self.set_status(f"Request to service failed: {e}")
+        except Exception as e:
+            self.set_status(f"An error occurred: {e}")

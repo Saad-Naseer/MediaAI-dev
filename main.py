@@ -42,7 +42,7 @@ class MediaAiApp(QMainWindow):
         self.record_button.clicked.connect(self.mic_to_text)
         self.btns_layout.addWidget(self.record_button, 3, 0)
         
-        self.upload_button = QPushButton('Upload Audio File', self)
+        self.upload_button = QPushButton('Upload File', self)
         self.upload_button.clicked.connect(self.upload_file)
         self.btns_layout.addWidget(self.upload_button, 4, 0)
         
@@ -161,7 +161,13 @@ class MediaAiApp(QMainWindow):
         self.speech_recognizer.start()
 
     def upload_file(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Open Audio File", "", "Audio Files (*.wav *.flac *.mp3)")
+        file_path, _ = QFileDialog.getOpenFileName(
+        self,
+        "Open Audio or Video File",  # Dialog title
+        "",  # Start directory (empty means default)
+        "Audio Files (*.wav *.flac *.mp3);;Video Files (*.mp4 *.avi *.mkv *.mov *.flv)"  # Combined filters
+        )
+
         if file_path:
             self.speech_recognizer= SpeechRecognizer(tool="file", language=self.language, file_path=file_path, engine = self.engine, model = self.model)
             self.speech_recognizer.status_update.connect(self.status_update)
