@@ -13,4 +13,6 @@
 ## To Generate exe file:
 ```PyInstaller --onefile --add-data "path_to_whisper\\whisper\\assets:whisper\assets" .\main.py```
 ## Features
-- [x] Audio (mic, .wav, .mp3, .AIFF, .AIFF-C, FLAC) to Text (.txt, .srt, .vvt) Converter 
+- [x] Audio (mic, .wav, .mp3, .AIFF, .AIFF-C, FLAC) to Text (.txt, .srt, .vvt) Converter
+- [x] Video(.mp4, .avi, .mkv, .mov, .flv) to Text (.txt, .srt, .vvt) Converter 
+
